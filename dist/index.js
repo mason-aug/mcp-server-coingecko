@@ -1,31 +1,28 @@
 #!/usr/bin/env node
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-require("dotenv/config");
-const mcp_js_1 = require("@modelcontextprotocol/sdk/server/mcp.js");
-const stdio_js_1 = require("@modelcontextprotocol/sdk/server/stdio.js");
-const axios_1 = tslib_1.__importDefault(require("axios"));
-const zod_1 = require("zod");
-const CoinGeckoMarketChartSchema = zod_1.z.object({
-    coinId: zod_1.z.string()
+import 'dotenv/config';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import axios from 'axios';
+import { z } from 'zod';
+const CoinGeckoMarketChartSchema = z.object({
+    coinId: z.string()
         .optional()
         .default('bitcoin')
         .describe('The ID of the coin to fetch market data for (e.g., bitcoin, ethereum)'),
-    vsCurrency: zod_1.z.string()
+    vsCurrency: z.string()
         .optional()
         .default('usd')
         .describe('The currency to display prices in (e.g., usd, eur, jpy)'),
-    days: zod_1.z.string()
+    days: z.string()
         .optional()
         .default('30')
         .describe('Number of days of data to retrieve (e.g., 1, 14, 30, 90, max)'),
-    interval: zod_1.z.string()
+    interval: z.string()
         .optional()
         .default('')
         .describe('Data interval (empty for automatic, daily, hourly, etc.)')
 });
-const server = new mcp_js_1.McpServer({
+const server = new McpServer({
     name: "mcp-crypto-market-data",
     description: "MCP server providing cryptocurrency market data via CoinGecko API",
     version: "1.0.0"
@@ -48,7 +45,7 @@ server.tool("getCoinMarketChart", "Get historical market chart data for a specif
             };
         }
         const url = `https://api.coingecko.com/api/v3/coins/${args.coinId}/market_chart`;
-        const response = await axios_1.default.get(url, {
+        const response = await axios.get(url, {
             params: {
                 vs_currency: args.vsCurrency,
                 days: args.days,
@@ -69,7 +66,7 @@ server.tool("getCoinMarketChart", "Get historical market chart data for a specif
     }
     catch (error) {
         let errorMessage = "An error occurred while fetching data from CoinGecko API";
-        if (axios_1.default.isAxiosError(error) && error.response) {
+        if (axios.isAxiosError(error) && error.response) {
             errorMessage = `CoinGecko API Error: ${error.response.status} - ${error.response.statusText}`;
             if (error.response.data) {
                 errorMessage += `\nDetails: ${JSON.stringify(error.response.data)}`;
@@ -92,7 +89,7 @@ server.tool("getCoinMarketChart", "Get historical market chart data for a specif
 async function startServer() {
     try {
         console.log("Environment variables loaded. CoinGecko API key is configured.");
-        const transport = new stdio_js_1.StdioServerTransport();
+        const transport = new StdioServerTransport();
         await server.connect(transport);
         console.log("MCP Server started using stdio");
     }
