@@ -16,8 +16,8 @@ interface CoinGeckoMarketChartParams {
 
 // Create a new MCP server
 const server = new McpServer({
-  name: "mcp-market-model",
-  description: "A simple MCP model server",
+  name: "mcp-crypto-market-data",
+  description: "MCP server providing cryptocurrency market data via CoinGecko API",
   version: "1.0.0"
 });
 
