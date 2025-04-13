@@ -7,10 +7,22 @@ import axios from 'axios';
 import { z } from 'zod';
 // Define Zod schema for CoinGecko API parameters
 const CoinGeckoMarketChartSchema = z.object({
-    coinId: z.string().optional().default('bitcoin'),
-    vsCurrency: z.string().optional().default('usd'),
-    days: z.string().optional().default('30'),
-    interval: z.string().optional().default('')
+    coinId: z.string()
+        .optional()
+        .default('bitcoin')
+        .describe('The ID of the coin to fetch market data for (e.g., bitcoin, ethereum)'),
+    vsCurrency: z.string()
+        .optional()
+        .default('usd')
+        .describe('The currency to display prices in (e.g., usd, eur, jpy)'),
+    days: z.string()
+        .optional()
+        .default('30')
+        .describe('Number of days of data to retrieve (e.g., 1, 14, 30, 90, max)'),
+    interval: z.string()
+        .optional()
+        .default('')
+        .describe('Data interval (empty for automatic, daily, hourly, etc.)')
 });
 // Create a new MCP server
 const server = new McpServer({
