@@ -7,7 +7,7 @@
     "mcp-server-coingecko": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.production.json",
     "start": "dotenv -- node dist/index.js",
     "dev": "dotenv -- tsc -w & dotenv -- node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
