@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mcp-server-coingecko": {
+      "command": "npx",
+      "args": ["-y", "dotenv-cli", "--", "github:mason-aug/mcp-server-coingecko.git"],
+      "env": {
+        "COINGECKO_API_KEY": "${process.env.COINGECKO_API_KEY}"
+      }
+    }
+  }
+}
