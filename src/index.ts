@@ -117,16 +117,10 @@ server.tool(
 // Start the server with stdio transport
 async function startServer() {
   try {
-    // Log that environment variables are loaded
-    console.log("Environment variables loaded. CoinGecko API key is configured.");
-    
     // Start receiving messages on stdin and sending messages on stdout
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    
-    console.log("MCP Server started using stdio");
   } catch (err) {
-    console.error("Failed to start MCP server:", err);
     process.exit(1);
   }
 }

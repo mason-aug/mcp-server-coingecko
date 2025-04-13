@@ -88,13 +88,10 @@ server.tool("getCoinMarketChart", "Get historical market chart data for a specif
 });
 async function startServer() {
     try {
-        console.log("Environment variables loaded. CoinGecko API key is configured.");
         const transport = new StdioServerTransport();
         await server.connect(transport);
-        console.log("MCP Server started using stdio");
     }
     catch (err) {
-        console.error("Failed to start MCP server:", err);
         process.exit(1);
     }
 }
