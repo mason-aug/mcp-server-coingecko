@@ -29,12 +29,12 @@ A Model Context Protocol server with tools for accessing cryptocurrency market d
 
 ### getCoinMarketChart
 
-Gets historical market chart data for a specific cryptocurrency.
+Gets historical market chart data for a specific cryptocurrency, including price, market cap, and volume.
 
-Parameters:
+Parameters (all validated with Zod):
 - `coinId` (optional): The ID of the coin to fetch data for (e.g., 'bitcoin', 'ethereum'). Defaults to 'bitcoin'.
 - `vsCurrency` (optional): The currency to display prices in (e.g., 'usd', 'eur', 'jpy'). Defaults to 'usd'.
-- `days` (optional): Number of days of data to retrieve. Defaults to '30'.
+- `days` (optional): Number of days of data to retrieve (e.g., '1', '14', '30', '90', 'max'). Defaults to '30'.
 - `interval` (optional): Data interval. Leave empty for automatic selection based on time range.
 
 Example usage:
@@ -65,6 +65,7 @@ npm run dev
 - Written in TypeScript
 - Uses stdio for communication
 - Provides cryptocurrency market data via CoinGecko API
+- Parameter validation with Zod
 
 ## Implementation Details
 
@@ -73,6 +74,7 @@ This server uses the `@modelcontextprotocol/sdk` to create an MCP server that:
 1. Communicates via stdio
 2. Provides historical market chart data for cryptocurrencies
 3. Follows the ES Module pattern
+4. Validates input parameters using Zod schemas
 
 ## Extending the Server
 

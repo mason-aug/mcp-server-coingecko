@@ -1,26 +1,88 @@
+// Load environment variables from .env file
+import 'dotenv/config';
 // Import using specific paths based on the exports field in package.json
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import axios from 'axios';
+import { z } from 'zod';
+// Define Zod schema for CoinGecko API parameters
+const CoinGeckoMarketChartSchema = z.object({
+    coinId: z.string().optional().default('bitcoin'),
+    vsCurrency: z.string().optional().default('usd'),
+    days: z.string().optional().default('30'),
+    interval: z.string().optional().default('')
+});
 // Create a new MCP server
 const server = new McpServer({
-    name: "mcp-market-model",
-    description: "A simple MCP model server",
+    name: "mcp-crypto-market-data",
+    description: "MCP server providing cryptocurrency market data via CoinGecko API",
     version: "1.0.0"
 });
-// Register a simple greeting tool as an example
-server.tool("greet", "A simple greeting tool", (extra) => {
-    return {
-        content: [
-            {
-                type: "text",
-                text: "Hello from MCP Server!"
+// Add a tool that fetches coin market chart data from CoinGecko API
+server.tool("getCoinMarketChart", "Get historical market chart data for a specific coin, including price, market cap, and volume", CoinGeckoMarketChartSchema.shape, async (args, extra) => {
+    try {
+        // Access the API key from environment variables
+        const apiKey = process.env.COINGECKO_API_KEY;
+        if (!apiKey) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: "Error: CoinGecko API key is not configured. Please add it to your .env file."
+                    }
+                ]
+            };
+        }
+        // Construct the API URL
+        const url = `https://api.coingecko.com/api/v3/coins/${args.coinId}/market_chart`;
+        // Make the API request with authentication header
+        const response = await axios.get(url, {
+            params: {
+                vs_currency: args.vsCurrency,
+                days: args.days,
+                interval: args.interval
+            },
+            headers: {
+                'x-cg-demo-api-key': apiKey
             }
-        ]
-    };
+        });
+        // Return the market chart data
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Market chart data for ${args.coinId} (${args.days} days in ${args.vsCurrency}):\n\n${JSON.stringify(response.data, null, 2)}`
+                }
+            ]
+        };
+    }
+    catch (error) {
+        // Handle errors
+        let errorMessage = "An error occurred while fetching data from CoinGecko API";
+        if (axios.isAxiosError(error) && error.response) {
+            errorMessage = `CoinGecko API Error: ${error.response.status} - ${error.response.statusText}`;
+            if (error.response.data) {
+                errorMessage += `\nDetails: ${JSON.stringify(error.response.data)}`;
+            }
+        }
+        else if (error instanceof Error) {
+            errorMessage = `Error: ${error.message}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: errorMessage
+                }
+            ]
+        };
+    }
 });
 // Start the server with stdio transport
 async function startServer() {
     try {
+        // Log that environment variables are loaded
+        console.log("Environment variables loaded. CoinGecko API key is configured.");
         // Start receiving messages on stdin and sending messages on stdout
         const transport = new StdioServerTransport();
         await server.connect(transport);
