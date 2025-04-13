@@ -32,14 +32,18 @@ const CoinGeckoMarketChartSchema = z.object({
 // Type inference from Zod schema
 type CoinGeckoMarketChartParams = z.infer<typeof CoinGeckoMarketChartSchema>;
 
-// Create a new MCP server
+// Create a new MCP server with capabilities
 const server = new McpServer({
   name: "mcp-crypto-market-data",
   description: "MCP server providing cryptocurrency market data via CoinGecko API",
   version: "1.0.0"
+}, {
+  capabilities: {
+    tools: {}
+  }
 });
 
-// Add a tool that fetches coin market chart data from CoinGecko API
+// Define available tools
 server.tool(
   "getCoinMarketChart", 
   "Get historical market chart data for a specific coin, including price, market cap, and volume",
@@ -98,6 +102,7 @@ server.tool(
       }
       
       return {
+        isError: true,
         content: [
           {
             type: "text",
