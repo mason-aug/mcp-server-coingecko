@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Load environment variables from .env file
 import 'dotenv/config';
 // Import using specific paths based on the exports field in package.json
