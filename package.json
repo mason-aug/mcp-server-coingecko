@@ -10,6 +10,7 @@
     "build": "tsc -p tsconfig.production.json",
     "start": "dotenv -- node dist/index.js",
     "dev": "dotenv -- tsc -w & dotenv -- node dist/index.js",
+    "inspect": "npx @modelcontextprotocol/inspector",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

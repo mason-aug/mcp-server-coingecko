@@ -9,6 +9,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import axios from 'axios';
 import { z } from 'zod';
 
+console.log("Starting MCP server...");
+
 // Define Zod schema for CoinGecko API parameters
 const CoinGeckoMarketChartSchema = z.object({
   coinId: z.string()

@@ -4,6 +4,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import axios from 'axios';
 import { z } from 'zod';
+console.log("Starting MCP server...");
 const CoinGeckoMarketChartSchema = z.object({
     coinId: z.string()
         .optional()
